@@ -1,0 +1,100 @@
+#VARIOUS#
+%							:commenting (until end of line)
+@< / @=< / @> / @>=					:comparison
+min / max						:comparison (min / max (binary or more))
+compare							:comparison (returns 3 values (i.e. inferior, equal or superior))
+== \==							:equality / inequality (deep)
+=@= \=@= / = \= / =:= =\=(1)				:equality / inequality (deep)
+garbage_collect						:force garbage collection
+( ... )							:grouping expressions
+=..(2)							:runtime evaluation
+case-sensitive						:tokens (case-sensitivity (keywords, variable identifiers...))
+[_a-z][_a-zA-Z0-9]*					:tokens (function identifier regexp (if different from variable identifier regexp))
+[_A-Z][_a-zA-Z0-9]*					:tokens (variable identifier regexp)
+CamelCase for variables, underscores for predicates	:tokens (what is the standard way for scrunching together multiple words)
+is							:variable assignment or declaration (assignment)
+=							:variable assignment or declaration (declaration)
+:-							:variable assignment or declaration (declaration)
+
+
+#FUNCTIONS#
+f(a,b,...)						:function call
+.. [ f, A, B, ...]					:function call
+F							:function call (with no parameter)
+the predicate fail					:function called when a function is not defined (in dynamic languages)
+f(Para1, Para2, ....) :- ... .				:function definition (predicates)
+current_predicate					:runtime inspecting the caller information
+
+
+#CONTROL FLOW#
+Catch							:exception (catching)
+Throw							:exception (throwing)
+c -> b1 ; c2 -> b2 ; b3					:if_then_else
+repeat, ..., c						:loop (do something until condition)
+X = val,(X = v1, ... ; X = v2, ... ; ...)		:multiple selection (switch)
+,							:sequence							
+
+
+
+#PACKAGE MODULE#
+:- module(p)						:declare
+:- use_module(name1, name2, ...)			:import (selectively)
+
+
+#STRINGS#
+char_code						:ascii to character
+char_code						:character to ascii
+sub_string / sub_atom					:extract a substring
+sub_string / sub_atom					:locate a substring
+write							:simple print (on any objects)
+format(3)						:simple print (printf-like)
+append							:string concatenation
+= \=							:string equality & inequality
+length							:string size
+atom_length						:string size
+'...'							:strings (with no interpolation of variables)
+"..."							:strings (with no interpolation of variables)
+char_type(C_, to_upper(C)), char_type(C_, to_lower(C))	:upper / lower case character
+upcase_atom/downcase_atom				:uppercase / lowercase / capitalized string
+upcase_atom / downcase_atom				:uppercase / lowercase / capitalized string
+
+
+#BOOLEANS#
+No							:false value
+fail							:false value
+not(4)							:logical not
+; / ,							:logical or / and (short circuit)
+true							:true value
+Yes							:true value
+
+
+#BAGS AND LISTS#
+[ e | l ]						:adding an element at the beginning (list cons) (return the new list (no side-effect))
+L = [_|ButFirst]					:all but the first element
+Forall							:for each element do something
+Member							:is an element in the list
+concat_atom						:join a list of strings in a string using a glue string
+Last							:last element
+Append							:list concatenation
+[ a, b, c ](5)						:list constructor
+Flatten							:list flattening (one level depth)
+Length							:list size
+nth0 / nth1						:list/array indexing
+get_assoc						:lookup an element in a association list
+Reverse							:Reverse
+min / max						:smallest / biggest element
+sort(6)							:Sort
+predsort / keysort / mergesort				:Sort
+Maplist							:transform a list (or bag) in another one
+Sublist							:transform a list (or bag) in another one
+maplist2						:transform two lists in parallel
+
+
+#VARIOUS DATA TYPES#
+Nothing							:computable tuple
+L =.. [ F | Args ], call(L)				:computable tuple
+findall(Key, item(Key, _), Keys)			:dictionary (list of keys)
+numlist / between					:range (inclusive .. inclusive)
+( a, b, c )						:tuple constructor
+
+
