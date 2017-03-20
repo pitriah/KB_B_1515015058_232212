@@ -50,7 +50,7 @@ goal
 	motif(_,Untuk);
 	nl,write("cara pemburu memburu dengan: "), nl,memburuDengan(Alat,_);
 	memburudengan(_,Jenis);
-	nl,write("Pelaku yang ditetapkan sebagai tersangka bernama: "),
+	nl,write("Pelaku yang ditetapkan sebagai tersangka bernams: "),
 	nl,pelaku(Penjahat).
 	
 	
