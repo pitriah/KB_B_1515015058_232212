@@ -1,0 +1,119 @@
+/*****************************************************************************
+
+		Copyright (c) 1984 - 2000 Prolog Development Center A/S
+
+ Project:  
+ FileName: CH04E12.PRO
+ Purpose: 
+ Written by: PDC
+ Modifyed by: Eugene Akimov
+ Comments: 
+******************************************************************************/
+
+trace
+domains
+  name,sex,occupation,object,vice,substance = symbol		%deskripsi dan implementasi
+  age=integer		%deskripsi dan implementasi
+
+predicates
+  person(name,age,sex,occupation) - nondeterm (o,o,o,o), nondeterm (i,o,o,i), nondeterm (i,o,i,o)		%seseorang memiliki data pribadi seperti nama,umur, jenis kelamin dan
+  had_affair(name,name) - nondeterm (i,i), nondeterm (i,o) % peristiwa pembunuhan dan keterangan nama
+  killed_with(name,object) - determ (i,o) % nama korban pembunuhan, objek atau lokasi tempat kejadian
+  killed(name) - procedure (o) % nama korban pembunuhan
+  killer(name) - nondeterm (o) % nama pembunuh
+  motive(vice) - nondeterm (i) % motif terjadinya pembunuhan
+  smeared_in(name,substance) - nondeterm (i,o), nondeterm (i,i) % nama korban yang berlumur zat atau bahan
+  owns(name,object) - nondeterm (i,i)% memiliki nama dan objek
+  operates_identically(object,object) - nondeterm (o,i)% keterangan alat dan lokasi tempat kejadian
+  owns_probably(name,object) - nondeterm (i,i)%  nama, bahan atau lokasi
+  suspect(name) - nondeterm (i) % nama tersangka
+
+/* * * Facts about the murder * * */
+clauses
+  person(bert,55,m,carpenter). % bert berusia 55 tahun, jenis kelamin laki-laki dan memiliki pekerjaan sebagai tukanh kayu
+  person(allan,25,m,football_player). % allan berusia 25 tahun, jenis kelamin laki-laki dan memiliki pekerjaan sebagai pemain bola 
+  person(allan,25,m,butcher). % allan berusia 25 tahun, jenis kelamin laki-laki dan memiliki pekerjaan sebagai tukang daging
+  person(john,25,m,pickpocket). % jhon berusia 25 tahun, jenis kelamin laki-laki dan memiliki pekerjaan sebagai pencopet
+
+  had_affair(barbara,john). %kejadian antara barbara, jhon
+  had_affair(barbara,bert). %kejadian antara barbara, bert
+  had_affair(susan,john). %kejadian antara susan, jhon
+
+  killed_with(susan,club). % nama korban dan lokasi pembunuhan
+  killed(susan). % korban pembunuhan
+
+  motive(money). % motif pembunuhan adalah uang
+  motive(jealousy). % motif pembunuhan adalah 
+  motive(righteousness). % motif pembunuhan adalah 
+
+  smeared_in(bert,blood). % bert berlumuran darah
+  smeared_in(susan,blood). % susan berlumuran darah
+  smeared_in(allan,mud). % allan berlumuran lumpur
+  smeared_in(john,chocolate). % jhon berlumuran cokelat
+  smeared_in(barbara,chocolate). % barbara berlumuran cokelat
+
+  owns(bert,wooden_leg). % bert memiliki kaki kayu
+  owns(john,pistol). % jhon memiliki pistol
+
+/* * * Background knowledge * * */
+
+  operates_identically(wooden_leg, club). % lokasi kejadian dan alat yang digunakan
+  operates_identically(bar, club). % lokasi kejadian dan alat yang digunakan
+  operates_identically(pair_of_scissors, knife). % lokasi kejadian dan alat yang digunakan
+  operates_identically(football_boot, club). % lokasi kejadian dan alat yang digunakan
+
+  owns_probably(X,football_boot):- % kemungkinan memiliki sepatu bola, jika memenuhi
+	person(X,_,_,football_player). % orang dengan pekerjaan sebagai pemain bola
+  owns_probably(X,pair_of_scissors):-% kemungkinan memiliki sepasang gunting, jika memenuhi
+	person(X,_,_,hairdresser). %orang dengan pekerjaan sebagai penata rambut
+  owns_probably(X,Object):- % kemungkinan memiliki, jika memenuhi
+	owns(X,Object). %orang yang mimilki benda
+
+/* * * * * * * * * * * * * * * * * * * * * * *
+ * Suspect all those who own a weapon with   *
+ * which Susan could have been killed.       *
+ * * * * * * * * * * * * * * * * * * * * * * */
+
+  suspect(X):- % di katakan tersangka jika memenuhi 
+	killed_with(susan,Weapon) , %susan dibunuh menggunakan senjata api dan
+	operates_identically(Object,Weapon) , % lokasi pembunuhan dan alat yang digunakan dan
+	owns_probably(X,Object). % kemungkinan lokasi atau objek yang dimiliki 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Suspect men who have had an affair with Susan.  *
+ * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  suspect(X):- % di katakan tersangka jika memenuhi
+	motive(jealousy),% keterangan motif pembunuhan dan
+	person(X,_,m,_),% keterangan orang dengan jenis kelamin laki-laki dan
+	had_affair(susan,X). % keterangan mengenai peristiwa susan dan keterngan jenis kelaminnya
+
+/* * * * * * * * * * * * * * * * * * * * *
+ * Suspect females who have had an       *
+ * affair with someone that Susan knew.  * 
+ * * * * * * * * * * * * * * * * * * * * */
+
+  suspect(X):- % di katakan tersangka jika memenuhi
+	motive(jealousy), %motif pembunuhan dan
+	person(X,_,f,_),% keterangan orang dengan jenis kelamin wanita dan
+	had_affair(X,Man), % keterangan peristiwa pembunuhan dan
+	had_affair(susan,Man). % keterangan pembunuhan susan 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Suspect pickpockets whose motive could be money.  *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  suspect(X):- % di katakan tersangka jika memenuhi
+	motive(money), %motif pembunuhan dan
+	person(X,_,_,pickpocket).%keterangan orang dengan jenis pekerjaannya 
+
+  killer(Killer):- % di katakan pembunuh, jika memenuhi
+	person(Killer,_,_,_),% keterangan nama pembunuh dan
+	killed(Killed),% keterangan target yang akan dibunuh dan
+	Killed <> Killer, /* It is not a suicide */
+	suspect(Killer), %jika tersangka membunuh dan
+	smeared_in(Killer,Goo),
+	smeared_in(Killed,Goo).
+
+goal
+  killer(X). % nama pembunuh
